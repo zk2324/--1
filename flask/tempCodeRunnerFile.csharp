@@ -1,0 +1,1 @@
+string connectionString = "Server=DESKTOP-CGJ6AVJ\\SQLEXPRESS;Database=your_database;User Id=your_username;Password=your_password;TrustServerCertificate=True;";

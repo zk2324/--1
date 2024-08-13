@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>學生專注度分析辨識系統</title>
+    <style>
+        body {
+            font-family: Inter, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .title {
+            text-align: center;
+            font-size: 40px;
+            font-weight: 781;
+            color: black;
+            margin-bottom: 20px;
+        }
+        .container {
+            width: 756px;
+            background: #ECEBEB;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            font-size: 18px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #999;
+        }
+        .submit-button {
+            width: 154px;
+            height: 85px;
+            background: #DCA967;
+            box-shadow: 0px 0px 14.7px 4px rgba(0, 0, 0, 0.13) inset;
+            border-radius: 17px;
+            border: none;
+            color: black;
+            font-size: 40px;
+            font-weight: 781;
+            line-height: 45px;
+            letter-spacing: 2px;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto 0 auto;
+        }
+        .flash-message {
+            color: red;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        .show-password {
+            width: 50px;
+            height: 44px;
+            background: #DCA967;
+            border: none;
+            border-radius: 5px;
+            color: black;
+            font-size: 18px;
+            cursor: pointer;
+            display: inline-block;
+            text-align: center;
+            line-height: 44px;
+        }
+    </style>
+</head>
+<body>
+    <div class="title">學生賬號密碼</div>
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <form action="/Sinput" method="post">
+            <div class="form-group">
+                <label for="username">帳號:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">密碼:</label>
+                <input type="password" id="password" name="password" required>
+                <button type="button" class="show-password" onclick="togglePassword()">👁️</button>
+            </div>
+            <button type="submit" class="submit-button">登入</button>
+        </form>
+    </div>
+    <script>
+        function togglePassword() {
+            var passwordInput = document.getElementById('password');
+            var type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+        }
+    </script>
+</body>
+</html>

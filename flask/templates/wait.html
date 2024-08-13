@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera Emotion Detection</title>
+</head>
+<body>
+    <h1>摄像头情绪检测</h1>
+    <select id="camera-select"></select>
+    <video id="video" width="640" height="480" autoplay></video>
+    <button id="start-button">开始检测</button>
+    <script>
+        const video = document.getElementById('video');
+        const startButton = document.getElementById('start-button');
+        const cameraSelect = document.getElementById('camera-select');
+
+        // 列出所有可用的视频输入设备
+        navigator.mediaDevices.enumerateDevices().then(devices => {
+            const videoDevices = devices.filter(device => device.kind === 'videoinput');
+            videoDevices.forEach(device => {
+                const option = document.createElement('option');
+                option.value = device.deviceId;
+                option.text = device.label || `Camera ${cameraSelect.length + 1}`;
+                cameraSelect.appendChild(option);
+            });
+        });
+
+        // 获取选定摄像头的视频流
+        function startCamera(deviceId) {
+            if (navigator.mediaDevices.getUserMedia) {
+                const constraints = {
+                    video: {
+                        deviceId: deviceId ? { exact: deviceId } : undefined
+                    }
+                };
+                navigator.mediaDevices.getUserMedia(constraints)
+                    .then(stream => {
+                        video.srcObject = stream;
+                    })
+                    .catch(error => {
+                        console.error('Error accessing webcam:', error);
+                    });
+            }
+        }
+
+        // 监听选择器的变化
+        cameraSelect.addEventListener('change', () => {
+            const selectedDeviceId = cameraSelect.value;
+            startCamera(selectedDeviceId);
+        });
+
+        // 初始化默认摄像头
+        startCamera();
+
+        // 处理开始检测按钮点击事件
+        startButton.addEventListener('click', () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const context = canvas.getContext('2d');
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const dataUrl = canvas.toDataURL('image/jpeg');
+
+            fetch('/detect', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ image: dataUrl })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Emotion Data:', data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
